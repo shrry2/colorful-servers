@@ -57,15 +57,30 @@ volumes:
 
 ## データベース情報
 
-| 項目 | 値 |
-|------|------|
-| データベース名 | `timesheet` |
-| ユーザー名 | `timesheet_user` |
-| ポート | 5432（127.0.0.1 のみ。外部非公開） |
-| SSL | 有効（`SHOW ssl;` → `on`） |
-| マイグレーション | 適用済み（`drizzle/0000_clear_mephisto.sql`、テーブル 8 個） |
+| DB 名 | ユーザー名 | 用途 |
+|-------|-----------|------|
+| `timesheet` | `timesheet_user` | michica-inc/timesheet 本番 |
+| `timesheet_staging` | `timesheet_staging_user` | michica-inc/timesheet ステージング |
+| `fortune` | `fortune_user` | michica-inc/fortune 本番 |
+| `fortune_staging` | `fortune_staging_user` | michica-inc/fortune ステージング |
 
-パスワードは VPS 上の `.env` と Vercel の環境変数で管理。リポジトリには保存しない。
+- ポート: 5432（127.0.0.1 のみ。外部非公開）
+- SSL: 有効（`SHOW ssl;` → `on`）
+- パスワードは各プロジェクトの Vercel 環境変数で管理。リポジトリには保存しない。
+
+## 新規プロジェクト DB の追加
+
+`scripts/add-project-db.sh` で自動化済み。VPS 上の `~/postgres/` で実行する。
+
+```bash
+bash scripts/add-project-db.sh <project_name>
+```
+
+実行内容：
+1. 本番・ステージング用ユーザーと DB を作成（`<project>_user` / `<project>_staging_user`）
+2. 両 DB に `pgbouncer.get_auth()` 関数を設置（PgBouncer の `auth_query` に必要）
+3. `pgbouncer.ini` に DB エントリを追記
+4. PgBouncer を再起動
 
 ## 起動・停止コマンド（VPS で実行）
 

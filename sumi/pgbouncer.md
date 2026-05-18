@@ -29,6 +29,8 @@ Vercel → [TLS] → PgBouncer :6432 → PostgreSQL :5432（内部ネットワ�
 ```ini
 [databases]
 timesheet = host=postgres port=5432 dbname=timesheet
+fortune = host=postgres port=5432 dbname=fortune
+fortune_staging = host=postgres port=5432 dbname=fortune_staging
 
 [pgbouncer]
 listen_addr = *

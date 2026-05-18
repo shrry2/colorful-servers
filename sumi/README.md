@@ -39,3 +39,4 @@
 |------|------|
 | 2026-05-17 | リポジトリ初期化、記録開始 |
 | 2026-05-18 | Let's Encrypt 証明書取得（`db.sumi.colorful-servers.com`）、PgBouncer 導入、Cloudflared 削除 |
+| 2026-05-18 | fortune / fortune_staging DB・ユーザー作成、DB 追加スクリプト（`scripts/add-project-db.sh`）整備 |
