@@ -78,9 +78,12 @@ bash scripts/add-project-db.sh <project_name>
 
 実行内容：
 1. 本番・ステージング用ユーザーと DB を作成（`<project>_user` / `<project>_staging_user`）
-2. 両 DB に `pgbouncer.get_auth()` 関数を設置（PgBouncer の `auth_query` に必要）
-3. `pgbouncer.ini` に DB エントリを追記
-4. PgBouncer を再起動
+2. `PUBLIC` の `CONNECT` 権限を剥奪し、正規ユーザーと `pgbouncer` にのみ付与（他プロジェクトの DB に接続できないよう制限）
+3. 両 DB に `pgbouncer.get_auth()` 関数を設置（PgBouncer の `auth_query` に必要）
+4. `pgbouncer.ini` に DB エントリを追記
+5. PgBouncer を再起動
+
+> **注意:** `REVOKE CONNECT` は既存のプール内接続には即時反映されない。既存 DB に手動で適用した後も PgBouncer の再起動が必要。
 
 ## 起動・停止コマンド（VPS で実行）
 

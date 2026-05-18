@@ -4,9 +4,10 @@
 #
 # 実行すると:
 #   1. 本番・ステージング用のユーザーと DB を PostgreSQL に作成
-#   2. 両 DB に pgbouncer.get_auth() 関数を設置
-#   3. pgbouncer.ini に DB エントリを追記
-#   4. PgBouncer を再起動
+#   2. PUBLIC の CONNECT 権限を剥奪し、正規ユーザーと pgbouncer にのみ付与
+#   3. 両 DB に pgbouncer.get_auth() 関数を設置
+#   4. pgbouncer.ini に DB エントリを追記
+#   5. PgBouncer を再起動
 
 set -euo pipefail
 
@@ -52,6 +53,15 @@ CREATE USER ${STAGING_USER} WITH PASSWORD '${STAGING_PASS_ESC}';
 CREATE DATABASE ${PROD_DB} OWNER ${PROD_USER};
 CREATE DATABASE ${STAGING_DB} OWNER ${STAGING_USER};
 EOSQL
+
+echo "--- CONNECT 権限を制限 ---"
+$PSQL <<EOSQL
+REVOKE CONNECT ON DATABASE ${PROD_DB} FROM PUBLIC;
+REVOKE CONNECT ON DATABASE ${STAGING_DB} FROM PUBLIC;
+GRANT CONNECT ON DATABASE ${PROD_DB} TO ${PROD_USER}, pgbouncer;
+GRANT CONNECT ON DATABASE ${STAGING_DB} TO ${STAGING_USER}, pgbouncer;
+EOSQL
+echo "  OK"
 
 echo "--- pgbouncer.get_auth() 関数を設置 ---"
 for DB in "$PROD_DB" "$STAGING_DB"; do
