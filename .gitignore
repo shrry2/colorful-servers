@@ -1,0 +1,23 @@
+# IDE / ツール
+.idea/
+.vscode/
+.serena/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# 秘密情報（平文）— 暗号化済みの場合は除外しない
+*.key
+*.pem
+*.p12
+*.pfx
+id_rsa
+id_ed25519
+*.secret
+.env
+.env.*
+secrets.yml
+secrets.yaml
+secrets.json
+vault_password
